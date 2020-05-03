@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="height: 100%; margin: 0;">
+    <div id="container" style="height: 100%;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.7.0/echarts-en.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.0.min.js"
+      integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript">
+      var dom = document.getElementById("container");
+      var myChart = echarts.init(dom);
+      var app = {};
+      option = null;
+
+      $.get("nepal_province_mini.geojson", function (nepalJson) {
+        myChart.hideLoading();
+
+        echarts.registerMap("Nepal", nepalJson);
+        option = {
+          title: {
+            text: "Nepal Population Data (2011)",
+            subtext: "Prepared By Aditya Kushwaha",
+            sublink: "https://kaditya97.com.np",
+            left: "right",
+          },
+          tooltip: {
+            trigger: "item",
+            showDelay: 0,
+            transitionDuration: 0.2,
+            formatter: function (params) {
+              var value = (params.value + "").split(".");
+              value = value[0].replace(/(\d{1,3})(?=(?:\d{3})+(?!\d))/g, "$1,");
+              return params.seriesName + "<br/>" + params.name + ": " + value;
+            },
+          },
+          visualMap: {
+            left: "left",
+            min: 1500000,
+            max: 6000000,
+            inRange: {
+              color: [
+                "#313695",
+                "#4575b4",
+                "#74add1",
+                "#abd9e9",
+                "#e0f3f8",
+                "#ffffbf",
+                "#fee090",
+                "#fdae61",
+                "#f46d43",
+                "#d73027",
+                "#a50026",
+              ],
+            },
+            text: ["High", "Low"],
+            calculable: true,
+          },
+          toolbox: {
+            show: true,
+            //orient: 'vertical',
+            left: "left",
+            top: "top",
+            feature: {
+              dataView: { readOnly: false },
+              restore: {},
+              saveAsImage: {},
+            },
+          },
+          series: [
+            {
+              name: "Nepal PopEstimates",
+              type: "map",
+              roam: true,
+              map: "Nepal",
+              emphasis: {
+                label: {
+                  show: true,
+                },
+              },
+              data: [
+                { name: "Province No. 1", value: 4534943 },
+                { name: "Province No. 2", value: 5404145 },
+                { name: "Bagmati Pradesh", value: 5529452 },
+                { name: "Gandaki Pradesh", value: 2403757 },
+                { name: "Province No. 5", value: 4499272 },
+                { name: "Karnali Pradesh", value: 1570418 },
+                { name: "Sudurpashchim Pradesh", value: 2552517 },
+              ],
+            },
+          ],
+        };
+
+        myChart.setOption(option);
+      });
+      if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+      }
+    </script>
+  </body>
+</html>
